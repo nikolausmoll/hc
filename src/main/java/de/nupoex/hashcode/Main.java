@@ -1,6 +1,7 @@
 package de.nupoex.hashcode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,14 +29,25 @@ public class Main {
         //Print the jvm heap size.
         System.out.println("Heap Size = " + heapSize);
 
-		calculateSolution("sample.txt", "sample-solution.txt");
-		//calculateSolution("me_at_the_zoo.in", "me_at_the_zoo.out");
-		calculateSolution("kittens.in", "kittens.out");
-		// calculateSolution("videos_worth_spreading.in", "videos_worth_spreading.out");
-		//calculateSolution("trending_today.in", "trending_today.out");
+		//calculateSolution("sample.txt", "sample-solution.txt");
+		
+        long score = 0;
+        score += calculateSolution("me_at_the_zoo.in", "me_at_the_zoo.out");
+        score += calculateSolution("kittens.in", "kittens.out");
+        score += calculateSolution("videos_worth_spreading.in", "videos_worth_spreading.out");
+        score += calculateSolution("trending_today.in", "trending_today.out");
+//		
+//		Model exampleModel = new DataReader("sample.txt").getModel();
+//		Map<Integer, Collection<Integer>> exampleSolution = new HashMap<>();
+//		exampleSolution.put(0, Arrays.asList(2));
+//		exampleSolution.put(1, Arrays.asList(3, 1));
+//		exampleSolution.put(2, Arrays.asList(0, 1));
+//		long exampleScore = Analyzer.computeScore(exampleModel, exampleSolution);
+		
+        System.out.println("Score: " + score);
 	}
 
-	private static void calculateSolution(String input, String output) {
+	private static long calculateSolution(String input, String output) {
 		Model model = new DataReader(input).getModel();
 
 		List<Potential> rankings = new ArrayList<>();
@@ -48,7 +60,7 @@ public class Main {
 
 		Collections.sort(rankings, new Potential.PriorityComparator());
 		Map<Integer, Collection<Integer>> sortedSolution = calculateSolution(model, rankings, true);
-		int sortedScore = Analyzer.computeScore(model, sortedSolution);
+		long sortedScore = Analyzer.computeScore(model, sortedSolution);
 		Logger.log("Sorted Score: " + sortedScore);
 
 //		for (int i = 0; i < 0; i++) {
@@ -70,6 +82,7 @@ public class Main {
 			bestSolution = sortedSolution;
 //		}
 		new DataWriter(output, bestSolution).write();
+		return Math.max(bestScore, sortedScore);
 	}
 
 	private static Map<Integer, Collection<Integer>> calculateSolution(Model model, List<Potential> rankings,
@@ -85,10 +98,10 @@ public class Main {
 			long potentialValue = potential.getPotential();
 			Video video = potential.getVideo();
 			if (handledRequests.contains(potential.getRequest().getIndex())) {
-				if (debug) {
-					Logger.log("Skip handled Request: Cache " + cacheIndex + ": " + poriority + " (" + potentialValue
-							+ ") for Video " + video.getIndex() + " on " + potential.getEndpointIndex());
-				}
+//				if (debug) {
+//					Logger.log("Skip handled Request: Cache " + cacheIndex + ": " + poriority + " (" + potentialValue
+//							+ ") for Video " + video.getIndex() + " on " + potential.getEndpointIndex());
+//				}
 				continue;
 			}
 
@@ -99,11 +112,11 @@ public class Main {
 
 			boolean fitsInCache = cache.hasEnoughSpace(video.getSizeInMb());
 			if (!fitsInCache) {
-				if (debug) {
-					Logger.log(
-							"Skip unsatisfyable Request: Cache " + cacheIndex + ": " + poriority + " (" + potentialValue
-									+ ") for Video " + video.getIndex() + " on " + potential.getEndpointIndex());
-				}
+//				if (debug) {
+//					Logger.log(
+//							"Skip unsatisfyable Request: Cache " + cacheIndex + ": " + poriority + " (" + potentialValue
+//									+ ") for Video " + video.getIndex() + " on " + potential.getEndpointIndex());
+//				}
 				continue;
 			}
 

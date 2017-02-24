@@ -10,23 +10,24 @@ import de.nupoex.hashcode.model.Request;
 
 public class Analyzer {
 	
-	public static int computeScore(Model model, Map<Integer, Collection<Integer>> solution)
+	public static long computeScore(Model model, Map<Integer, Collection<Integer>> solution)
 	{
-		int score = 0;
+		long score = 0;
+		long totalRequestCount = 0;
 		for (Request request : model.getRequests())
 		{
-			int requestCount = request.getCount();
+			long requestCount = request.getCount();
+			totalRequestCount += requestCount;
 			Endpoint endpoint =  model.getEndpoint(request.getEndpointIndex());
-			int originalLatency = endpoint.getLatency();
+			long originalLatency = endpoint.getLatency();
 			
 			Integer bestCacheLatency = getBestLatency(request.getVideoIndex(), solution, endpoint.getCacheLatency());
 			if (bestCacheLatency == null || bestCacheLatency > originalLatency) {
 				continue;
 			}
-			
 			score += (originalLatency - bestCacheLatency) * requestCount;
 		}
-		return score;
+		return 1000L * score / totalRequestCount;
 	}
 
 	private static Integer getBestLatency(int videoIndex, Map<Integer, Collection<Integer>> solution, Map<Integer, Integer> caches) {
