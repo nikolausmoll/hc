@@ -31,15 +31,15 @@ public class DataReader {
 		readRequests(iterator);
 	}
 
-	public Model getModel()
-	{
+	public Model getModel() {
 		return model;
 	}
-	
+
 	private void readRequests(Iterator<String> iterator) {
 		for (int i = 0; i < r; i++) {
 			String[] split = iterator.next().split(" ");
-			model.setRequest(i, new Request(toInt(split[0]), toInt(split[1]), toInt(split[2])));
+			model.setRequest(i,
+					new Request(i, model.getVideo(toInt(split[0])), model.getEndpoint(toInt(split[1])), toInt(split[2])));
 		}
 	}
 
@@ -47,9 +47,9 @@ public class DataReader {
 		for (int i = 0; i < e; i++) {
 			String[] split = iterator.next().split(" ");
 			int cacheCount = toInt(split[1]);
-			Endpoint endpoint = new Endpoint(toInt(split[0]), cacheCount);
+			Endpoint endpoint = new Endpoint(i, toInt(split[0]), cacheCount);
 			model.setEndpoint(i, endpoint);
-			for (int j  = 0; j < cacheCount; j++) {
+			for (int j = 0; j < cacheCount; j++) {
 				String[] cacheLatency = iterator.next().split(" ");
 				endpoint.setCache(toInt(cacheLatency[0]), toInt(cacheLatency[1]));
 			}
@@ -57,10 +57,16 @@ public class DataReader {
 	}
 
 	private void readVideos(String line) {
+		int tooBigToCache = 0;
 		String[] split = line.split(" ");
 		for (int i = 0; i < v; i++) {
-			model.setVideo(i, new Video(i, toInt(split[i])));
+			int videoSize = toInt(split[i]);
+			if (videoSize > x) {
+				tooBigToCache++;
+			}
+			model.setVideo(i, new Video(i, videoSize));
 		}
+		System.out.println("Not Cachable videos: " + tooBigToCache + " / " + v);
 	}
 
 	private void initializeModel(String line) {
@@ -70,7 +76,7 @@ public class DataReader {
 		r = toInt(split[2]);
 		c = toInt(split[3]);
 		x = toInt(split[4]);
-		
+
 		model = new Model(v, e, r, c, x);
 	}
 

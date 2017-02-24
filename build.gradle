@@ -12,6 +12,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = "de.nupoex.hashcode.Main"
+applicationDefaultJvmArgs = ["-Xms8192m", "-Xmx8192m"]
 
 
 // In this section you declare where to find the dependencies of your project

@@ -14,9 +14,9 @@ import de.nupoex.hashcode.model.Video;
 public class DataWriter {
 
 	private String filename;
-	private Map<Integer, Collection<Video>> solution;
+	private Map<Integer, Collection<Integer>> solution;
 
-	public DataWriter(String filename, Map<Integer, Collection<Video>> solution) {
+	public DataWriter(String filename, Map<Integer, Collection<Integer>> solution) {
 		this.filename = filename;
 		this.solution = solution;
 	}
@@ -41,10 +41,10 @@ public class DataWriter {
 		Collections.sort(caches);
 		for (Integer cache : caches) {
 			b.append(cache);
-			Collection<Video> videos = solution.get(cache);
-			for (Video video : videos) {
+			Collection<Integer> videos = solution.get(cache);
+			for (Integer video : videos) {
 				b.append(' ');
-				b.append(video.getIndex());
+				b.append(video);
 			}
 			b.append("\n");
 		}
